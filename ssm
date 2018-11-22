@@ -58,15 +58,23 @@ function remove() {
 		return 1
 	fi
 }
+function helpme() {
+	echo "SSM Help:"
+	echo "search - Search for packages."
+	echo "get - Install a package."
+	echo "refresh - Refresh repo."
+	echo "list - List available packages."
+	echo "remove - Remove a package."	
+}
 case $1 in
 	search)
 		shift
-		[[ -z $1 ]] && echo "pls gib search term" && exit 1
+		[[ -z $1 ]] && echo "Please specify search terms" && exit 1
 		search $@
 		;;
 	get)
 		shift
-		[[ -z $1 ]] && echo "pls gib package" && exit 1
+		[[ -z $1 ]] && echo "Please specify a package" && exit 1
 		get $@
 		;;
     refresh)
@@ -79,7 +87,7 @@ case $1 in
         shift
         remove $@
         ;;
-	*)
-		echo "pls gib cmd"
-		;;
+    *)
+	helpme
+	;;
 esac
