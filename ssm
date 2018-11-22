@@ -45,6 +45,7 @@ function checkexists() {
 	fi
 }
 function refresh() {
+    rm -f "$HOME/.config/ssm/repo.ssmrepo" || true
     mkdir -p "$HOME/.config/ssm"
     wget https://github.com/Appadeia/ssm/raw/master/repo.ssmrepo -O "$HOME/.config/ssm/repo.ssmrepo" -q --show-progress
 }
