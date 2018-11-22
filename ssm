@@ -45,7 +45,8 @@ function checkexists() {
 	fi
 }
 function refresh() {
-    wget 
+    mkdir -p "$HOME/.config/ssm"
+    wget https://github.com/Appadeia/ssm/raw/master/repo.ssmrepo -O "$HOME/.config/ssm/repo.ssmrepo" -q --show-progress
 }
 case $1 in
 	search)
@@ -58,6 +59,12 @@ case $1 in
 		[[ -z $1 ]] && echo "pls gib package" && exit 1
 		get $@
 		;;
+    refresh)
+        refresh
+        ;;
+    list)
+        search "*"
+        ;;
 	*)
 		echo "pls gib cmd"
 		;;
