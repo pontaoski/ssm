@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+REPO="$HOME/.config/ssm/repo.ssmrepo"
+if [ ! -f ~/.config/ssm/repo.ssmrepo ]; then
+	echo "No repo found! Please get a repo file at ~/.config/ssm/repo.ssmrepo!"
+	exit 1
+fi
+function search() {
+	grep -i $1 $REPO | while read p
+	do
+		echo "$p"
+	done < $REPO > cache.txt
+	column -N Name,URL,Version,Summary -t -s"|" -T 4 cache.txt
+	rm -f cache.txt
+}
+function get() {
+	mkdir -p "$HOME/bin"
+	declare -a pkgs
+	for i in $@; do
+		if [[ $(grep -i "$1|h" $REPO| wc -l) -ne 1 ]]; then
+			echo "Package not found: $1"
+		else
+			pkgs+=("$1")
+		fi
+		shift
+	done
+	if [[ ${#pkgs[@]} -eq 0 ]]; then
+		echo "No packages found."
+		exit 1
+	fi
+	for i in "${pkgs[@]}"
+	do
+		if checkexists $i; then
+			echo "Package $i already exists! Not downloading..."	
+		else
+			wget $(grep -i $i $REPO | cut -f2 -d'|') -O "$HOME/bin/$(grep -i $i $REPO | cut -f1 -d'|')" -q --show-progress
+			chmod +x "$HOME/bin/$(grep -i $i $REPO | cut -f1 -d'|')"	
+		fi
+	done
+}
+function checkexists() {
+	if ls "$HOME/bin" | grep -i $1 >/dev/null; then
+		return 0
+	else
+		return 1
+	fi
+}
+function refresh() {
+    wget 
+}
+case $1 in
+	search)
+		shift
+		[[ -z $1 ]] && echo "pls gib search term" && exit 1
+		search $@
+		;;
+	get)
+		shift
+		[[ -z $1 ]] && echo "pls gib package" && exit 1
+		get $@
+		;;
+	*)
+		echo "pls gib cmd"
+		;;
+esac
