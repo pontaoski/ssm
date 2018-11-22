@@ -49,6 +49,15 @@ function refresh() {
     mkdir -p "$HOME/.config/ssm"
     wget https://github.com/Appadeia/ssm/raw/master/repo.ssmrepo -O "$HOME/.config/ssm/repo.ssmrepo" -q --show-progress
 }
+function remove() {
+	if ls "$HOME/bin" | grep -i $1 >/dev/null; then
+        echo "Removing $1..."
+		rm "$HOME/bin/$(ls "$HOME/bin" | grep -i $1)"
+	else
+        echo "$1 doesn't seem to be installed."
+		return 1
+	fi
+}
 case $1 in
 	search)
 		shift
@@ -65,6 +74,10 @@ case $1 in
         ;;
     list)
         search "*"
+        ;;
+    remove)
+        shift
+        remove $@
         ;;
 	*)
 		echo "pls gib cmd"
